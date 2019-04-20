@@ -4,7 +4,7 @@
 #
 Name     : pyemd
 Version  : 0.5.1
-Release  : 2
+Release  : 3
 URL      : https://files.pythonhosted.org/packages/c0/c5/7fea8e7a71cd026b30ed3c40e4c5ea13a173e28f8855da17e25271e8f545/pyemd-0.5.1.tar.gz
 Source0  : https://files.pythonhosted.org/packages/c0/c5/7fea8e7a71cd026b30ed3c40e4c5ea13a173e28f8855da17e25271e8f545/pyemd-0.5.1.tar.gz
 Summary  : A Python wrapper for Ofir Pele and Michael Werman's implementation of the Earth Mover's Distance.
