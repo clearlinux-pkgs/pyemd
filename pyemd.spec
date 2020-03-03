@@ -4,14 +4,15 @@
 #
 Name     : pyemd
 Version  : 0.5.1
-Release  : 6
+Release  : 7
 URL      : https://files.pythonhosted.org/packages/c0/c5/7fea8e7a71cd026b30ed3c40e4c5ea13a173e28f8855da17e25271e8f545/pyemd-0.5.1.tar.gz
 Source0  : https://files.pythonhosted.org/packages/c0/c5/7fea8e7a71cd026b30ed3c40e4c5ea13a173e28f8855da17e25271e8f545/pyemd-0.5.1.tar.gz
 Summary  : A Python wrapper for Ofir Pele and Michael Werman's implementation of the Earth Mover's Distance.
 Group    : Development/Tools
 License  : MIT
-Requires: pyemd-python3
-Requires: pyemd-python
+Requires: pyemd-license = %{version}-%{release}
+Requires: pyemd-python = %{version}-%{release}
+Requires: pyemd-python3 = %{version}-%{release}
 Requires: numpy
 BuildRequires : buildreq-distutils3
 BuildRequires : numpy
@@ -23,10 +24,18 @@ BuildRequires : numpy
 :target: https://wiki.python.org/moin/Python2orPython3
 :alt: Python versions badge
 
+%package license
+Summary: license components for the pyemd package.
+Group: Default
+
+%description license
+license components for the pyemd package.
+
+
 %package python
 Summary: python components for the pyemd package.
 Group: Default
-Requires: pyemd-python3
+Requires: pyemd-python3 = %{version}-%{release}
 
 %description python
 python components for the pyemd package.
@@ -36,6 +45,7 @@ python components for the pyemd package.
 Summary: python3 components for the pyemd package.
 Group: Default
 Requires: python3-core
+Provides: pypi(pyemd)
 
 %description python3
 python3 components for the pyemd package.
@@ -43,24 +53,39 @@ python3 components for the pyemd package.
 
 %prep
 %setup -q -n pyemd-0.5.1
+cd %{_builddir}/pyemd-0.5.1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1533509329
-python3 setup.py build -b py3
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1583206620
+# -Werror is for werrorists
+export GCC_IGNORE_WERROR=1
+export CFLAGS="$CFLAGS -fno-lto "
+export FCFLAGS="$CFLAGS -fno-lto "
+export FFLAGS="$CFLAGS -fno-lto "
+export CXXFLAGS="$CXXFLAGS -fno-lto "
+export MAKEFLAGS=%{?_smp_mflags}
+python3 setup.py build
 
 %install
+export MAKEFLAGS=%{?_smp_mflags}
 rm -rf %{buildroot}
-python3 -tt setup.py build -b py3 install --root=%{buildroot}
+mkdir -p %{buildroot}/usr/share/package-licenses/pyemd
+cp %{_builddir}/pyemd-0.5.1/LICENSE %{buildroot}/usr/share/package-licenses/pyemd/cf71f83d4e4155a675756133d5d9e45911ab628c
+python3 -tt setup.py build  install --root=%{buildroot}
 echo ----[ mark ]----
 cat %{buildroot}/usr/lib/python3*/site-packages/*/requires.txt || :
 echo ----[ mark ]----
 
 %files
 %defattr(-,root,root,-)
+
+%files license
+%defattr(0644,root,root,0755)
+/usr/share/package-licenses/pyemd/cf71f83d4e4155a675756133d5d9e45911ab628c
 
 %files python
 %defattr(-,root,root,-)
